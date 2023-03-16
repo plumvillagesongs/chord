@@ -26,13 +26,13 @@ class Chord {
   }
 
   Set<int> getPitches() {
-    Set<int> pitchOffsets = {0};
+    Set<int> pitchOffsets = {note.offset};
     if (chordType == ChordType.major) {
-      pitchOffsets.add(4);
-      pitchOffsets.add(7);
+      pitchOffsets.add(note.offset + 4);
+      pitchOffsets.add(note.offset + 7);
     } else if (chordType == ChordType.minor) {
-      pitchOffsets.add(3);
-      pitchOffsets.add(7);
+      pitchOffsets.add(note.offset + 3);
+      pitchOffsets.add(note.offset + 7);
     }
     for (var property in properties) {
       pitchOffsets.addAll(property.pitchOffsets);
@@ -94,6 +94,8 @@ enum ChordType {
 class Note {
   late WhiteNote whiteNote;
   late int offsetFromWhiteNote;
+  late int offset;
+  List<String> note_list = ['C','_','D','_','E','F','_','G','_','A','_','B'];
 
   Note(this.whiteNote, this.offsetFromWhiteNote);
 
@@ -109,7 +111,9 @@ class Note {
       '#': 1,
       '##': 2,
     }[match!.group(2)!]!;
+    offset = note_list.indexOf(match!.group(1)!) + offsetFromWhiteNote;
   }
+
 
   @override
   String toString() {
