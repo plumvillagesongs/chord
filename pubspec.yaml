@@ -1,6 +1,6 @@
 name: chord
 description: A Dart library for chord recognition, manipulation, and instrument chord chart generation.
-version: 1.0.0
+version: 1.0.1
 repository: https://github.com/joranmulderij/chord
 homepage:
 
