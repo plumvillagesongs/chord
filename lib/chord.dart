@@ -16,7 +16,7 @@ class Chord {
     RegExpMatch? match = chordExpression.firstMatch(chordString);
     assert(match != null);
     note = Note.fromString(
-        match!.namedGroup('note')! + match.namedGroup('accidental')!);
+        match!.namedGroup('note')! + (match.namedGroup('accidental') ?? ''));
     chordType =
         match.namedGroup('minor') == 'm' ? ChordType.minor : ChordType.major;
     // print(match.gr);
