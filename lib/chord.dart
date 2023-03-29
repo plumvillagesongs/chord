@@ -1,4 +1,6 @@
 library chord;
+List<String> note_list = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+List<String> note_list_b = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
 
 /// The main Chord data class.
 class Chord {
@@ -40,22 +42,31 @@ class Chord {
     if (inputList.indexOf(startValue) == 0){
       return inputList;
     }
-    if (inputList.indexOf(startValue) > 0 || inputList.indexOf(startValue+ 12) > 0){
+    // if base in chord set
+    bool move_back = false;
+    if (inputList.indexOf(startValue) > 0 || inputList.indexOf(startValue + 12) > 0){
       // Find the index of the start value
       int startIndex = inputList.indexOf(startValue);
       if (startIndex < 0) {
-        startIndex = inputList.indexOf(startValue+12);
+        startValue += 12;
+        startIndex = inputList.indexOf(startValue);
+        move_back = true;
       }
 
       // Add values after the start value to the output list
       for (int i = startIndex; i < inputList.length; i++) {
-        outputList.add((inputList[i]-12)%12);
+        int val = inputList[i];
+        outputList.add(val);
       }
 
       // Add values before the start value to the output list
       for (int i = 0; i < startIndex; i++) {
-        outputList.add(inputList[i]+12);
-      }
+          int val = inputList[i];
+          if (val < startValue) {
+            val += 12;
+          }
+          outputList.add(val);
+        }
     } else {
       int flag = 0;
       startValue = (startValue - 12) % 12;
@@ -117,6 +128,19 @@ class Chord {
   String toString() {
     return '$note ${chordType == ChordType.major ? 'Major' : 'Minor'} ${properties.join(' ')}';
   }
+
+  @override
+  Set<String> pitchNotes(){
+    Set<String> output = {};
+    List<String> list = note_list;
+    if (note.offsetFromWhiteNote < 0)
+        list = note_list_b;
+
+    for (int noteOffset in getPitches()){
+      output.add(list[(noteOffset-12)%12]);
+    }
+    return output;
+  }
 }
 
 class ChordProperty {
@@ -125,7 +149,6 @@ class ChordProperty {
   final String identifier;
   final Set<int> pitchOffsets;
   final Set<int> toRemovePitchOffsets;
-
 
   ChordProperty(this.fullName, this.symbol, this.identifier, this.pitchOffsets,
       this.toRemovePitchOffsets);
@@ -152,6 +175,7 @@ class ChordProperty {
   String toString() {
     return fullName;
   }
+
 }
 
 /// A value representing the different types of chords.
@@ -166,7 +190,7 @@ class Note {
   late WhiteNote whiteNote;
   late int offsetFromWhiteNote;
   late int offset;
-  List<String> note_list = ['C','_','D','_','E','F','_','G','_','A','_','B'];
+
 
   Note(this.whiteNote, this.offsetFromWhiteNote);
 
@@ -218,3 +242,4 @@ enum WhiteNote {
   F,
   G,
 }
+
