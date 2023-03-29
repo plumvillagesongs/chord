@@ -33,7 +33,7 @@ class Chord {
     properties = ChordProperty.chordPropertyList
         .where((element) => (match.namedGroup(element.identifier) ?? '') != '')
         .toList();
-  }
+    }
 
   List<int> processBaseNote(List<int> inputList, int startValue) {
     List<int> outputList = [];
@@ -91,10 +91,15 @@ class Chord {
       pitchOffsets.add(note.offset + 7);
     }
     for (var property in properties) {
-      pitchOffsets.addAll(property.pitchOffsets);
+      for (int p in property.pitchOffsets) {
+        pitchOffsets.add(note.offset + p);
+      }
     }
     for (var property in properties) {
-      pitchOffsets.removeAll(property.toRemovePitchOffsets);
+      //pitchOffsets.removeAll(property.toRemovePitchOffsets);
+      for (int p in property.toRemovePitchOffsets) {
+        pitchOffsets.remove(note.offset + p);
+      }
     }
 
     //process base
@@ -120,6 +125,7 @@ class ChordProperty {
   final String identifier;
   final Set<int> pitchOffsets;
   final Set<int> toRemovePitchOffsets;
+
 
   ChordProperty(this.fullName, this.symbol, this.identifier, this.pitchOffsets,
       this.toRemovePitchOffsets);
